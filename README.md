@@ -1,6 +1,5 @@
 # Intro 
-Code sample for a channel integration that connects Zendesk and Nexmo's Messaging API (in this case, it uses WhatsApp)
-Using Node Express 
+Code sample for a channel integration that connects Zendesk and Nexmo's Messaging API, built using Node Express 
 
 ## Description
 This repository contains the source code for an integration service that connects
