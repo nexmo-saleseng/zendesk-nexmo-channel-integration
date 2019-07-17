@@ -1,2 +1,15 @@
-# zendesk-nexmo-channel-integration
-Sample code for creating a channel integration for Zendesk that uses Nexmo's APIs 
+# Intro 
+Code sample for a channel integration that connects Zendesk and Nexmo's Messaging API (in this case, it uses WhatsApp)
+Using Node Express 
+
+## Description
+This repository contains the source code for an integration service that connects
+Zendesk to Nexmo. 
+
+The service covers the following responsibilities: 
+
+1. Authorization with Nexmo: The user provides their Nexmo-Assigned-WhatsApp-Number and a JWT to use the Messages API 
+2. Messaging Notifications from Nexmo: Serving as a webhook for Nexmo's Messaging API, it will received inbound POST requests that will notify it on message updates (delivery receipts, inbound messages, etc).  
+3. Implementation of Zendesk's API: It provides a list of methods used by Zendesk to create the channel integration- providing the Manifest, replying to 'Pull' requests, etc. 
+
+NOTE: THIS IS NOT AN EXAMPLE OF A PROPERLY SECURED INTEGRATION. 
