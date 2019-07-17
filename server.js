@@ -40,7 +40,7 @@ function name(req) {
  * information needed to connect to your Nexmo account. 
  *
  * @param {req} req POST request
- * @returns {Object} Containing login, password, wordpress_location, author
+ * @returns {Object} Containing name, jwt and WhatsApp number
  */
 function metadata(req) {
   if (req.body.metadata) {
@@ -48,10 +48,9 @@ function metadata(req) {
   }
 
   return {
-    login: '',
-    password: '',
-    wordpress_location: '',
-    author: null
+    name: '',
+    jwt: '',
+    whatsappNumber: ''
   };
 }
 

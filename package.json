@@ -1,7 +1,7 @@
 {
-  "name": "wordpress",
+  "name": "zendesk-channel-integration-nexmo",
   "version": "0.0.1",
-  "description": "Node based Wordpress integration for AnyChannel",
+  "description": "Code sample for a channel integration that connects Zendesk and Nexmo's Messages API, built using Node Express",
   "main": "server.js",
   "license": "Apache-2.0",
   "scripts": {
@@ -32,6 +32,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zendesk/sample_wordpress_anychannel_integration.git"
+    "url": "https://github.com/nexmo-saleseng/zendesk-nexmo-channel-integration"
   }
 }
