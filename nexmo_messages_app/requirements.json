@@ -1,0 +1,8 @@
+{
+  "channel_integrations": {
+    "messages-api": {
+      "manifest_url":
+        "$URL_TO_GET_MANIFEST_FROM"
+    }
+  }
+}

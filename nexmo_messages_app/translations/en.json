@@ -1,0 +1,8 @@
+{
+  "app": {
+    "name": "Nexmo Channel Integration",
+    "short_description": "Use Nexmo's messages API with Zendesk!",
+    "long_description": "Use Nexmo's messages API with Zendesk!",
+    "installation_instructions": "Simply click install."
+  }
+}
