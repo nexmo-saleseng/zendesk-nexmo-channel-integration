@@ -2,7 +2,7 @@
 This file implements a Node Express service.  It connects our business logic
 to Node Express. 
 */
-const messagesAPI = require('./messagesAPI');
+const messagesAPI = require('./controller');
 const config = require('./config');
 const express = require('express');
 const app = express();
@@ -82,50 +82,73 @@ function clickthroughId(req) {
   return req.query.external_id;
 }
 
-// Routes
+/**
+ * 
+ * Routes 
+ * 
+ */
 
-//Zendesk Routes 
+/**
+ * Zendesk Routes 
+ **/
+
 app.get('/manifest', (req, res) => {
+  console.log("Zendesk manifest request"); 
   messagesAPI.manifest(res);
 });
 
 app.post('/admin_ui', (req, res) => {
+  console.log("Zendesk admin_ui request"); 
   messagesAPI.admin_ui(returnUrl(req), name(req), metadata(req), res);
 });
 
 app.post('/admin_ui_2', (req, res) => {
+  console.log("Zendesk admin_ui_2 request"); 
   messagesAPI.admin_ui_2(req.body, res);
 });
 
 app.post('/pull', (req, res) => {
-messagesAPI.pull(metadata(req), state(req), res);
+  console.log("Zendesk pull request"); 
+  messagesAPI.pull(metadata(req), state(req), res);
 });
 
 app.post('/channelback', (req, res) => {
+  console.log("Received Zendesk channelback: " + JSON.stringify(req.body));
   messagesAPI.channelback(req.body.message, req.body.thread_id, JSON.parse(req.body.metadata), res); 
 });
 
 app.get('/clickthrough', (req, res) => {
+  console.log("Zendesk Clickthrough"); 
   messagesAPI.clickthrough(clickthroughId(req), res);
 });
 
 app.get('/healthcheck', (req, res) => {
+  console.log("Zendesk healthcheck"); 
   messagesAPI.healthcheck(res);
 });
 
 app.post('/event_callback', (req, res) => { 
-  console.log("received zendesk event: " + JSON.stringify(req.body.events[0]));
+  req.body.events.forEach((event) => { 
+    console.log("Received Zendesk event: " + JSON.stringify(event));
+  })
+
   res.sendStatus(200); 
 });
 
-//Nexmo Routes 
+/**
+ * Nexmo Routes 
+ **/
 app.post('/inbound', (req, res) => { 
+  console.log("Received Nexmo inbound event: " + JSON.stringify(req.body));
+
   if (req.body && req.body.direction && req.body.direction === 'inbound') { 
     //By default channel is WhatsApp 
     const fromNumber = req.body.from.number; 
     const toNumber = req.body.to.number; 
     const content = req.body.message.content.text; 
-    console.log("received message from: " + fromNumber + ", content: " + content);
+    
+    console.log("new message from: " + fromNumber + ", content: " + content);
+    
     messagesAPI.onMessageReceived(fromNumber, toNumber, content); 
   }
   res.sendStatus(200); 

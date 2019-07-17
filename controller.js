@@ -1,7 +1,6 @@
 'use strict';
 
 const request = require('request');
-const htmlparser = require('htmlparser2');
 const uuidv4 = require('uuid/v4');
 const Message = require('./message'); 
 const messageQueues = new Object(); 
@@ -18,16 +17,15 @@ function escapeString(input) {
   }
 }
 
-/**
- * Calculates the HTML for an admin UI page
- *
- * @param {string} name The name of the integration instance
- * @param {string} returnUrl Zendesk URL to which metadata and state should be
- * posted
- * @param {string} warning Warning string to be displayed to user, e.g. when
- * redisplaying page after encountering errors.  May contain HTML, may be null.
- * @returns {string} HTML
- */
+ /**
+  * Calculates the HTML for an admin UI page
+  * @param {string} name The name of the integration instance
+  * @param {object} metadata 
+  * @param {string} returnUrl URL in Zendesk to which updated metadata should be
+  *  POSTed
+  * @param {string} Warning string to be displayed to user, e.g. when
+  * redisplaying page after encountering errors.  May contain HTML, may be null.
+  */
 function adminUiHtml(name, metadata, returnUrl, warning) {
   let warningStr = '';
 
@@ -59,9 +57,9 @@ function adminUiHtml(name, metadata, returnUrl, warning) {
 exports.manifest = res => {
   res.send({
     name: 'Messages API',
-    id: 'com.nexmo.integrations.messages.api.three',
+    id: 'com.nexmo.integrations.nexmo.api', 
     author: 'Roy Ben Shoushan',
-    version: 'v0.0.2',
+    version: 'v0.0.1',
     channelback_files: true,
     urls: {
       admin_ui: './admin_ui',
@@ -145,8 +143,7 @@ exports.admin_ui_2 = (attributes, res) => {
  * 
  * @param {Object} metadata The metadata containing connection information for
  *  Nexmo, etc.  This was created by admin_ui_2.
- * @param {Object} state The current state of pull.  In our case, this contains
- *  a timestamp of the most recent comment we've successfully imported.
+ * @param {Object} state The current state of pull.  
  * @param {Object} res Response object to which JSON results will be written
  */
 exports.pull = (metadata, state, res) => {
@@ -158,7 +155,6 @@ exports.pull = (metadata, state, res) => {
     const isoDate = new Date().toISOString(); 
 
     let resource = {
-      //UUID for now
       external_id: uuidv4(),
       //Zendesk will link all messages from this user to a single ticket 
       thread_id: message.getFrom(), 
@@ -190,8 +186,8 @@ exports.pull = (metadata, state, res) => {
 };
 
 /**
- * Channelback is invoked when Zendesk agents to respond to Nexmo comment
- * in the Zendesk/AnyChannel ticket lifecycle. The Zendesk/AnyChannel ticket
+ * Channelback is invoked when Zendesk agents want to respond to Nexmo comment
+ * in the Zendesk ticket lifecycle. The Zendesk ticket
  * lifecycle is:
  * 1. An end user sends a message over WhatsApp
  * 2. Zendesk invokes the "pull" method
@@ -203,9 +199,9 @@ exports.pull = (metadata, state, res) => {
  *    Zendesk Comment
  * 7. The "channelback" method sends a message to represent the
  *    Zendesk comment
+ * @param {string} message The text of the message we will send 
  * @param {string} thread_id The ID of the zendesk ticket which is the customer's 
  *   WhatsApp number
- * @param {string} message The text of the message we will send 
  * @param {Object} metadata The metadata containing connection information for
  *  Nexmo - This was created by admin_ui_2.
  * @param {Object} res Response object to which JSON results will be written
@@ -256,6 +252,13 @@ exports.healthcheck = res => {
   res.sendStatus(200);
 };
 
+/**
+ * Handle a new message and queue it for Zendesk to later pull it 
+ *
+ * @param {string} from from WhatsApp number 
+ * @param {string} to to WhatsApp number
+ * @param {string} content the message itself 
+ */
 exports.onMessageReceived = (from, to, content) => { 
   const message = new Message(from, content); 
   if (messageQueues[to]) { 
