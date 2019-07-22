@@ -1,5 +1,5 @@
 # Intro 
-Code sample for a channel integration that connects Zendesk and WhatsApp from Nexmo's Messages API, built using Node Express 
+Code sample for a channel integration that connects Zendesk and WhatsApp from Nexmo's Messages API, built using Node Express. 
 
 ### Description
 This repository contains the source code for an integration service that connects
@@ -8,10 +8,19 @@ Zendesk to Nexmo.
 The service covers the following responsibilities: 
 
 1. Authorization with Nexmo: The user provides their Nexmo assigned WhatsApp number and a JWT to use the Messages API.
-2. Messaging Notifications from Nexmo: Serving as a webhook for Nexmo's Messaging API, it will received inbound POST requests that will notify it on message updates (delivery receipts, inbound messages, etc).  
+2. Messaging Notifications from Nexmo: Serving as a webhook for Nexmo's Messaging API, it will receive inbound POST requests that will notify it on message updates (delivery receipts, inbound messages, etc).  
 3. Implementation of Zendesk's API: It provides a list of methods used by Zendesk to create the channel integration - sending the Manifest, replying to 'Pull' requests, etc. 
 
 *NOTE: THIS IS NOT AN EXAMPLE OF A PROPERLY SECURED INTEGRATION.*
+
+### How does it work? 
+
+1. An end user sends a message over WhatsApp and this service receives it from the inbound messages Webhook 
+2. Zendesk invokes the "pull" method and the service respondes with the new messages it has received since the last pull 
+3. The "pull" method returns data about the WhatsApp message & Zendesk creates a Ticket to represent the WhatsApp message (or a reponse to an existing ticket)
+5. A Zendesk agent responds to the Zendesk Ticket by creating a new Zendesk Comment
+6. Zendesk invokes the "channelback" method, passing along data about the Zendesk Comment
+7. The "channelback" method sends a message using the Nexmo API to represent the Zendesk comment 
 
 ### Setup 
 
@@ -21,7 +30,7 @@ The setup is divided into two parts-
 
 #### Configuring Your Nexmo Messaging Application 
 
-Enter the [Nexmo Dashboard](https://dashboard.nexmo.com/sign-in) and in the left panel choose 'Messages and Dispatch' -> 'Your applications', choose your applicatio and configure the Inbound URL. The URL should be that of the integration, as it will receive the inbound WhatsApp messages and dispath them to Zendesk. For the purpess of a POC, you can use the default integration we have deployed for the purpess of a POC and set it to *enter URL*. 
+Enter the [Nexmo Dashboard](https://dashboard.nexmo.com/sign-in) and in the left panel choose 'Messages and Dispatch' -> 'Your applications', choose your desired application and configure the Inbound URL. The URL should be that of the integration, as it will receive the inbound WhatsApp messages and dispath them to Zendesk. For the purpess of a POC, you can use the default integration we have deployed for the purpess of a POC and set it to *enter URL*. 
 
 #### Installing & Configuring the Sample Zendesk Application 
 
